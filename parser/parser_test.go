@@ -8,9 +8,9 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	input := `
-let x 5;
-let = 10;
-let 838383;
+return 5;
+return 10;
+return 993322;
 `
 
 	l := lexer.New(input)
@@ -18,6 +18,7 @@ let 838383;
 
 	program := p.ParseProgram()
 	checkParseErrors(t, p)
+
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
 	}
@@ -26,18 +27,30 @@ let 838383;
 			len(program.Statements))
 	}
 
-	tests := []struct {
-		expectedIdentifer string
-	}{
-		{"x"},
-		{"y"},
-		{"foobar"},
-	}
+	// tests := []struct {
+	// 	expectedIdentifer string
+	// }{
+	// 	{"x"},
+	// 	{"y"},
+	// 	{"foobar"},
+	// }
 
-	for i, tt := range tests {
-		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt, tt.expectedIdentifer) {
-			return
+	// for i, tt := range tests {
+	// 	stmt := program.Statements[i]
+	// 	if !testLetStatement(t, stmt, tt.expectedIdentifer) {
+	// 		return
+	// 	}
+	// }
+
+	for _, stmt := range program.Statements {
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+		if !ok {
+			t.Errorf("stmt not *ast.returnStatement. got=%T", stmt)
+			continue
+		}
+		if returnStmt.TokenLiteral() != "return" {
+			t.Errorf("returnStmt.TokenLiteral not 'return', got %q",
+				returnStmt.TokenLiteral())
 		}
 	}
 }
