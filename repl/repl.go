@@ -1,11 +1,11 @@
 package repl
 
 import (
+	"MONKE/lexer"
+	"MONKE/parser"
 	"bufio"
 	"fmt"
 	"io"
-	"ta/lexer"
-	"ta/parser"
 )
 
 const PROMPT = ">> "

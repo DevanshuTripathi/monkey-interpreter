@@ -1,9 +1,9 @@
 package parser
 
 import (
+	"MONKE/ast"
+	"MONKE/lexer"
 	"fmt"
-	"ta/ast"
-	"ta/lexer"
 	"testing"
 )
 

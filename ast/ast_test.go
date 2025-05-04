@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"ta/token"
+	"MONKE/token"
 	"testing"
 )
 

@@ -1,11 +1,11 @@
 package parser
 
 import (
+	"MONKE/ast"
+	"MONKE/lexer"
+	"MONKE/token"
 	"fmt"
 	"strconv"
-	"ta/ast"
-	"ta/lexer"
-	"ta/token"
 )
 
 type Parser struct {
