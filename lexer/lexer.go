@@ -2,6 +2,7 @@ package lexer
 
 import "MONKE/token"
 
+// Lexer Defination
 type Lexer struct {
 	input        string
 	position     int  // current position in input (points to current char)
@@ -9,6 +10,7 @@ type Lexer struct {
 	ch           byte // current char under examination
 }
 
+// Read Current char and then move to next
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -55,6 +57,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LBRACE, l.ch)
 	case '}':
 		tok = newToken(token.RBRACE, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -77,6 +82,7 @@ func (l *Lexer) NextToken() token.Token {
 
 }
 
+// Read numbers for integer
 func (l *Lexer) readNumber() string {
 	position := l.position
 	for isDigit(l.ch) {
@@ -85,16 +91,31 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+// function to read the string
+func (l *Lexer) readString() string {
+	position := l.position + 1 // +1 So '"' Doesnt return with the string
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[position:l.position]
+}
+
+// check if current char is digit
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
+// for skipping whitespaces
 func (l *Lexer) skipWhiteSpace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
 }
 
+// for reading identifiers
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -103,20 +124,24 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
+// check is letter
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
+// make a new token with the type and literal
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
+// Using to define the lexer struct
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
+// peek to the next char
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0
@@ -125,6 +150,7 @@ func (l *Lexer) peekChar() byte {
 	}
 }
 
+// position and readPosition ahead by one
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0

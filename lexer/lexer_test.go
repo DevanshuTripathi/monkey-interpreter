@@ -6,11 +6,13 @@ import (
 	"MONKE/token"
 )
 
+// Custom Tests
 func TestNextToken(t *testing.T) {
 	input := `!=;
 	==;
 	let x = 5;
-	
+	"foobar"
+	"foo bar"
 	`
 
 	tests := []struct {
@@ -26,6 +28,9 @@ func TestNextToken(t *testing.T) {
 		{token.ASSIGN, "="},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+		{token.STRING, "foobar"},
+		{token.STRING, "foo bar"},
+		{token.EOF, ""},
 	}
 
 	l := New(input)

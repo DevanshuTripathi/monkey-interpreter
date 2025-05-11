@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// Tests for let statements
 func TestLetStatements(t *testing.T) {
 	tests := []struct {
 		input              string
@@ -42,6 +43,7 @@ func TestLetStatements(t *testing.T) {
 	}
 }
 
+// Function to check if length of parser.errors is 0 else print the errors
 func checkParserErrors(t *testing.T, p *Parser) {
 	errors := p.Errors()
 
@@ -56,6 +58,7 @@ func checkParserErrors(t *testing.T, p *Parser) {
 	t.FailNow()
 }
 
+// check if the statement is a let statement or not
 func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	if s.TokenLiteral() != "let" {
 		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
@@ -80,6 +83,7 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	return true
 }
 
+// Custom Test for identifier
 func TestIdentifierExpression(t *testing.T) {
 	input := "foobar;"
 
@@ -112,6 +116,7 @@ func TestIdentifierExpression(t *testing.T) {
 
 }
 
+// Custom Test for Integer Expression
 func TestIntegerLiteralExpression(t *testing.T) {
 	input := "5;"
 	l := lexer.New(input)
@@ -140,6 +145,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
+// Tests for Prefix Expressions
 func TestParsingPrefixExpressions(t *testing.T) {
 	prefixTests := []struct {
 		input    string
@@ -179,6 +185,7 @@ func TestParsingPrefixExpressions(t *testing.T) {
 	}
 }
 
+// check if given expression is an integer or not
 func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	integ, ok := il.(*ast.IntegerLiteral)
 	if !ok {
@@ -197,6 +204,7 @@ func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	return true
 }
 
+// Tests for Infix Expressions
 func TestParsingInfixExpressions(t *testing.T) {
 	infixTests := []struct {
 		input      string
@@ -247,6 +255,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 	}
 }
 
+// Custom Test for boolean
 func TestBooleanExpression(t *testing.T) {
 	input := "true;"
 	l := lexer.New(input)
@@ -275,6 +284,7 @@ func TestBooleanExpression(t *testing.T) {
 	}
 }
 
+// check if expression is an identifier
 func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	ident, ok := exp.(*ast.Identifier)
 	if !ok {
@@ -293,6 +303,7 @@ func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	return true
 }
 
+// switch case for testing literal expressions
 func testLiteralExpression(
 	t *testing.T,
 	exp ast.Expression,
@@ -312,6 +323,7 @@ func testLiteralExpression(
 	return false
 }
 
+// check if expression is infix
 func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, operator string, right interface{}) bool {
 	opExp, ok := exp.(*ast.InfixExpression)
 	if !ok {
@@ -332,6 +344,7 @@ func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, ope
 	return true
 }
 
+// check if expression is boolean
 func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 	bo, ok := exp.(*ast.Boolean)
 	if !ok {
@@ -350,6 +363,7 @@ func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 	return true
 }
 
+// Custom Test for if expression
 func TestIfExpression(t *testing.T) {
 	input := `if (x < y) { x }`
 	l := lexer.New(input)
@@ -397,6 +411,7 @@ func TestIfExpression(t *testing.T) {
 	}
 }
 
+// Custom test for if else expression
 func TestIfElseExpression(t *testing.T) {
 	input := `if (x < y) { x } else { y }`
 	l := lexer.New(input)
@@ -450,6 +465,7 @@ func TestIfElseExpression(t *testing.T) {
 	}
 }
 
+// Custom test for function literal
 func TestFunctionLiteralParsing(t *testing.T) {
 	input := `fn(x, y) { x + y; }`
 
@@ -498,6 +514,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 	testInfixExpression(t, bodyStmt.Expression, "x", "+", "y")
 }
 
+// Tests for function parameters
 func TestFunctionParameterParsing(t *testing.T) {
 	tests := []struct {
 		input          string
@@ -529,6 +546,7 @@ func TestFunctionParameterParsing(t *testing.T) {
 	}
 }
 
+// Custom Test for call expressions
 func TestCallExpressionParsing(t *testing.T) {
 	input := "add(1, 2 * 3, 4 + 5);"
 	l := lexer.New(input)
@@ -567,6 +585,27 @@ func TestCallExpressionParsing(t *testing.T) {
 	testInfixExpression(t, exp.Arguments[2], 4, "+", 5)
 }
 
+// Custom Test for String
+func TestStringLiteralExpression(t *testing.T) {
+	input := `"hello world;"`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	literal, ok := stmt.Expression.(*ast.StringLiteral)
+	if !ok {
+		t.Fatalf("exp not *ast.StringLiteral. got=%T", stmt.Expression)
+	}
+
+	if literal.Value != "hello world" {
+		t.Errorf("literal.Value not %q. got=%q", "hello world", literal.Value)
+	}
+}
+
+// Tests for operator precedence
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	tests := []struct {
 		input    string

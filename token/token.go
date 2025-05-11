@@ -2,18 +2,21 @@ package token
 
 type TokenType string
 
+// Defination of our Token struct
 type Token struct {
 	Type    TokenType
 	Literal string
 }
 
+// Token Type
 const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
 	// Identifier + Literals
-	IDENT = "IDENT"
-	INT   = "INT"
+	IDENT  = "IDENT"
+	INT    = "INT"
+	STRING = "STRING"
 
 	// Operators
 	ASSIGN   = "="
@@ -23,9 +26,9 @@ const (
 	ASTERISK = "*"
 	SLASH    = "/"
 
-	LT = "<"
-	GT = ">"
-
+	// Relational
+	LT     = "<"
+	GT     = ">"
 	EQ     = "=="
 	NOT_EQ = "!="
 
@@ -33,6 +36,7 @@ const (
 	COMMA     = ","
 	SEMICOLON = ";"
 
+	// Parenthesis
 	LPAREN = "("
 	RPAREN = ")"
 	LBRACE = "{"
@@ -48,6 +52,7 @@ const (
 	RETURN   = "RETURN"
 )
 
+// List of keywords in MONKE
 var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
 	"let":    LET,
@@ -58,6 +63,7 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
+// Checking for token in keywords
 func LookupIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok
